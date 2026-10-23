@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alexa+ Personal Agent</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brandmark">A+</div><div class="brand"><strong>Alexa+ Personal Agent</strong><span>Your private everyday assistant</span></div>
+  <div class="top-actions"><label class="language-picker" title="Conversation and voice language">Language <select id="languageSelect"><option value="auto">Auto</option><option value="en">English</option><option value="hi-IN">हिन्दी</option><option value="en-IN">Hinglish</option></select></label><label class="language-picker" title="Whose data to use">Person <select id="personSelect"><option value="default">Main</option></select></label><button class="icon-button" id="personAdd" title="Add a person">＋</button><button class="local-pill" id="locPill" title="Live location (used for maps, distance and rides)">📍 Location…</button><button class="icon-button" id="notifBtn" title="Enable desktop alerts" style="display:none">🔔</button><span class="local-pill"><i></i> Local prototype</span><button class="icon-button" id="briefingBtn" title="Daily briefing">☼</button></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <p class="nav-label">WORKSPACE</p>
+    <button class="nav-item active" data-page="chat"><span>✦</span> Assistant chat</button>
+    <details class="tools-drawer">
+      <summary>☷ &nbsp; Tools & features <span class="drawer-chevron">⌄</span></summary>
+      <div class="drawer-items">
+        <button class="nav-item" data-page="memories"><span>◉</span> Memories</button>
+        <button class="nav-item" data-page="study"><span>▤</span> Study planner</button>
+        <button class="nav-item" data-page="inventory"><span>▦</span> Inventory & expiry</button>
+        <button class="nav-item" data-page="dishes"><span>♨</span> Dish suggestions</button>
+        <button class="nav-item" data-page="shopping"><span>🛍</span> Shopping assistant</button>
+        <button class="nav-item" data-page="deliveries"><span>📦</span> Smart delivery</button>
+        <button class="nav-item" data-page="visitors"><span>✉</span> Visitor messages</button>
+        <button class="nav-item" data-page="family-messages"><span>🎙</span> Family voice notes</button>
+        <button class="nav-item" data-page="continuity"><span>⇄</span> Sync & connections</button>
+        <button class="nav-item" data-page="database"><span>▥</span> Database viewer</button>
+        <button class="nav-item" data-page="vault"><span>♙</span> Password vault</button>
+        <div class="nav-divider">HOME & SAFETY</div>
+        <button class="nav-item" data-page="home-safety"><span>⌂</span> Home safety demo</button>
+        <button class="nav-item" data-page="arrival"><span>⌂</span> Arrival greeting</button>
+        <button class="nav-item" data-page="alerts"><span>⚠</span> Local alerts</button>
+      </div>
+    </details>
+    <div class="sidebar-note"><strong>Privacy note</strong><p>This prototype runs on your computer. Keep it on localhost and use demo credentials only while testing.</p></div>
+  </aside>
+  <main class="main">
+    <section class="page active" id="page-chat">
+      <div class="alexa-hero">
+        <div class="hero-glow hero-glow-one"></div><div class="hero-glow hero-glow-two"></div>
+        <div class="hero-copy"><span class="hero-kicker"><span class="hero-kicker-dot"></span> YOUR PERSONAL AI COMPANION</span>
+          <h1>Meet your<br><span>everyday assistant.</span></h1>
+          <p>Ask naturally. Get things done. Make everyday life a little easier.</p>
+          <button type="button" class="hero-talk-button" id="heroTalkBtn" aria-label="Start voice input"><span class="hero-mic">⌁</span><span><strong>Talk to your assistant</strong><small>Tap to start a hands-free voice chat</small></span><span class="hero-arrow">↗</span></button>
+          <div class="hero-trust"><span>✦ Personalised help</span><span>◉ Remembers what matters</span><span>⌂ Made for everyday life</span></div>
+        </div>
+        <div class="voice-orb-wrap" aria-hidden="true"><div class="orb-ring ring-a"></div><div class="orb-ring ring-b"></div><div class="voice-orb"><div class="orb-core"></div><div class="orb-wave wave-one"></div><div class="orb-wave wave-two"></div><div class="orb-wave wave-three"></div></div><span class="orb-caption">HERE WHEN YOU NEED ME</span></div>
+        <div class="hero-bottom-curve"></div>
+      </div>
+      <div class="welcome-grid">
+        <article class="welcome-card welcome-card-feature"><div class="welcome-card-icon">✦</div><div><span class="card-eyebrow">YOUR DAY, SIMPLIFIED</span><h2>What can I help you with?</h2><p>Plan your studies, remember important details, find a meal, or ask a question in your own words.</p><button class="text-action" data-prompt="What can you help me with?">Explore what I can do <span>→</span></button></div></article>
+        <article class="welcome-card"><div class="welcome-card-icon icon-blue">◷</div><span class="card-eyebrow">GET A HEAD START</span><h2>Start with your day</h2><p>See your priorities and get a simple plan for today.</p><button class="text-action" data-prompt="What should I do today?">Give me my briefing <span>→</span></button></article>
+        <article class="welcome-card"><div class="welcome-card-icon icon-gold">⌂</div><span class="card-eyebrow">YOUR HOME & ROUTINES</span><h2>Help that fits your life</h2><p>Keep track of household items, study tasks, and saved memories.</p><button class="text-action" data-page="memories">Open my memories <span>→</span></button></article>
+      </div>
+      <div class="conversation-area"><div class="conversation-heading"><div><span class="card-eyebrow">LET'S TALK</span><h2>Your conversation</h2></div><span class="conversation-status"><i></i> Assistant ready</span></div>
+        <div class="chat-shell">
+          <div id="chatMessages" class="chat-messages"><div class="message assistant"><div class="message-avatar">A+</div><div><div class="bubble">Hi! I'm your personal assistant. I can help with your day, study tasks, memories, household inventory, and more. What would you like to do?</div><div class="message-time">Ready when you are</div></div></div></div>
+          <div class="suggestions"><button class="suggestion" data-prompt="What should I do today?">☼ Daily briefing</button><button class="suggestion" data-prompt="Show my study tasks">▤ Study tasks</button><button class="suggestion" data-prompt="Which items are expiring soon?">⌛ Expiry check</button><button class="suggestion" data-prompt="Suggest a dish because I feel stressed">♨ Mood-based food</button></div>
+          <form id="chatForm" class="chat-input-row"><textarea id="chatInput" rows="1" placeholder="Ask me anything…" aria-label="Message your assistant"></textarea><button type="button" id="voiceBtn" class="voice-button" title="Speak your request">🎙</button><button type="button" id="voiceModeBtn" class="voice-button voice-mode-button" title="Hands-free voice conversation (like Alexa)">🎧</button><button class="send-button" type="submit" aria-label="Send">➤</button></form>
+          <div class="input-footnote"><span id="voiceStatus">Enter to send · Shift+Enter for a new line</span><label class="voice-toggle"><input type="checkbox" id="autoSpeak"> Speak replies <span class="voice-toggle-track"></span></label><span id="aiModeStatus">Local assistant mode · optional AI key</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-memories">
+      <div class="page-heading"><div><p class="eyebrow">PERSONAL CONTEXT</p><h1>Memories</h1><p class="muted">Save information and search it later.</p></div></div>
+      <div class="two-col"><form id="memoryForm" class="panel form-panel"><h2>Save a memory</h2><label>Title<input name="title" required placeholder="e.g. DBMS practical"></label><label>Content<textarea name="content" required placeholder="What should the assistant remember?"></textarea></label><label>Category<select name="category"><option>general</option><option>study</option><option>preference</option><option>personal</option></select></label><button class="primary" type="submit">Save memory</button><div class="form-result" id="memoryResult"></div></form><div class="panel"><div class="panel-title-row"><h2>Saved memories</h2><button class="secondary small" id="refreshMemories">Refresh</button></div><input id="memorySearch" class="search-input" placeholder="Search memories…"><div id="memoryList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-study">
+      <div class="page-heading"><div><p class="eyebrow">LEARN WITH A PLAN</p><h1>Study planner</h1><p class="muted">Add tasks, track deadlines, and mark work complete.</p></div></div>
+      <div class="two-col"><form id="taskForm" class="panel form-panel"><h2>Add study task</h2><label>Task title<input name="title" required placeholder="Revise SQL queries"></label><label>Subject<input name="subject" placeholder="DBMS"></label><label>Due date<input name="due_date" type="date"></label><label>Estimated minutes<input name="estimated_minutes" type="number" min="5" max="1440" value="30"></label><button class="primary" type="submit">Add task</button><div class="form-result" id="taskResult"></div></form><div class="panel"><div class="panel-title-row"><h2>Pending tasks</h2><button class="secondary small" id="refreshTasks">Refresh</button></div><div id="taskList" class="data-list"></div><hr><button class="primary" id="makePlanBtn" type="button">Make my study plan (from my history)</button><div id="planResult" class="data-list"></div></div></div>
+      <div class="two-col" style="margin-top:18px"><form id="reminderForm" class="panel form-panel"><h2>Add a reminder</h2><label>What should I remind you about?<input name="title" required placeholder="Take medicine"></label><label>When<input name="remind_at" type="datetime-local" required></label><button class="primary" type="submit">Save reminder</button><div class="form-result" id="reminderResult"></div><p class="muted">Reminders ring while this app is open in a browser tab.</p></form><div class="panel"><div class="panel-title-row"><h2>Pending reminders</h2><button type="button" class="secondary small" id="refreshReminders">Refresh</button></div><div id="reminderList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-inventory">
+      <div class="page-heading"><div><p class="eyebrow">HOME ORGANIZATION</p><h1>Inventory & expiry</h1><p class="muted">Track items and find products that are expired or near expiry.</p></div></div>
+      <div class="two-col"><form id="inventoryForm" class="panel form-panel"><h2>Add inventory item</h2><label>Item name<input name="item_name" required placeholder="Milk"></label><div class="form-row"><label>Quantity<input name="quantity" type="number" min="0" step="0.1" value="1"></label><label>Unit<input name="unit" value="item"></label></div><label>Expiry date<input name="expiry_date" type="date"></label><label>Category<input name="category" value="general"></label><button class="primary" type="submit">Add item</button><div class="form-result" id="inventoryResult"></div></form><div class="panel"><div class="panel-title-row"><h2>Inventory</h2><button class="secondary small" id="refreshInventory">Refresh</button></div><div class="expiry-control"><label>Expiry window <select id="expiryDays"><option value="3">3 days</option><option value="7" selected>7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></label><button class="secondary small" id="checkExpiry">Check expiry</button></div><div id="expirySummary" class="expiry-summary"></div><div id="inventoryList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-dishes">
+      <div class="page-heading"><div><p class="eyebrow">WHAT SOUNDS GOOD?</p><h1>Mood-based dishes</h1><p class="muted">Get simple meal ideas based on your mood and preferences.</p></div></div>
+      <div class="two-col"><form id="dishForm" class="panel form-panel"><h2>Find a dish</h2><label>Current mood<select name="mood"><option value="comfort">Need comfort</option><option value="happy">Happy</option><option value="sad">Sad</option><option value="stressed">Stressed</option><option value="spicy">Craving spicy food</option><option value="tired">Tired</option><option value="healthy">Want something healthy</option><option value="celebratory">Celebratory</option></select></label><label>Ingredients available<input name="available_ingredients" placeholder="potato, rice, tomato"></label><label>Diet preference<select name="dietary_preference"><option value="none">No preference</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option></select></label><label>Max cooking time (minutes)<input name="max_cooking_minutes" type="number" min="5" max="240" value="30"></label><button class="primary" type="submit">Suggest dishes</button></form><div class="panel"><h2>Your suggestions</h2><div id="dishResults" class="dish-results empty-state">Choose your mood and select “Suggest dishes”.</div><hr><h2>Plan meals from inventory</h2><p class="muted">Checks your saved inventory and prioritizes ingredients expiring soon.</p><label>Number of days <select id="mealPlanDays"><option value="3">3 days</option><option value="5">5 days</option><option value="7">7 days</option></select></label><button class="primary" id="generateMealPlan">Generate meal plan</button><div id="mealPlanResults" class="dish-results"></div></div></div>
+    </section>
+    <section class="page" id="page-shopping">
+      <div class="page-heading"><div><p class="eyebrow">PRODUCT DISCOVERY</p><h1>Shopping assistant</h1><p class="muted">Search product listings on supported marketplaces. Verify current price, stock, seller and reviews on the retailer's website.</p></div></div>
+      <div class="two-col"><form id="shoppingForm" class="panel form-panel"><h2>Find a product</h2><label>Product, budget and needs<textarea name="query" required placeholder="Wireless earbuds under ₹2,000 with good battery life"></textarea></label><button class="primary">Search marketplaces</button><div id="shoppingResult" class="form-result"></div></form><div class="panel"><h2>Search links</h2><p class="muted">This version opens real retailer search pages; it does not scrape or claim live prices.</p><div id="shoppingLinks" class="data-list"><div class="empty-state">Enter what you want to find.</div></div></div></div>
+    </section>
+    <section class="page" id="page-deliveries">
+      <div class="page-heading"><div><p class="eyebrow">HOME & DELIVERY INTELLIGENCE</p><h1>Smart Delivery Assistant</h1><p class="muted">Save orders, keep a delivery timeline, and prepare for arrivals. Live courier tracking is not connected in this prototype.</p></div><span class="local-pill">TRACKING DEMO</span></div>
+      <div class="two-col"><form id="deliveryForm" class="panel form-panel"><h2>Register an order</h2><label>Item / order name<input name="item_name" required placeholder="Wireless headphones"></label><label>Retailer<input name="retailer" placeholder="Amazon, Flipkart…"></label><label>Courier<input name="courier" placeholder="Courier name, if known"></label><label>Tracking number<input name="tracking_number" placeholder="Optional tracking number"></label><div class="form-row"><label>Current status<select name="status"><option>Order confirmed</option><option>Shipped</option><option>In transit</option><option>Out for delivery</option><option>Delivery attempted</option><option>Delayed</option><option>Delivered</option><option>Cancelled</option><option>Returned</option></select></label><label>Estimated delivery<input name="estimated_date" type="date"></label></div><label>Preferred recipient<input name="recipient" placeholder="Me / family member"></label><label>Notes<textarea name="notes" placeholder="Delivery instructions or context"></textarea></label><button class="primary">Save order</button><div id="deliveryResult" class="form-result"></div></form><div class="panel"><div class="panel-title-row"><h2>Your deliveries</h2><button class="secondary small" id="refreshDeliveries">Refresh</button></div><div class="security-banner"><strong>Prototype limitation</strong><span>Tracking statuses below are manually entered. A supported carrier API is needed for verified live updates and automatic notifications.</span></div><div id="deliveryList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-visitors">
+      <div class="page-heading"><div><p class="eyebrow">HOME & DELIVERY INTELLIGENCE</p><h1>Visitor & Neighbour Messages</h1><p class="muted">Review messages and item reports submitted through the separate visitor portal.</p></div><a class="secondary small" href="/visitor" target="_blank" rel="noopener">Open visitor portal ↗</a></div>
+      <div class="security-banner"><strong>Local prototype security</strong><span>The visitor form is separate from the homeowner dashboard, but the homeowner inbox is not authenticated. Keep this app on your own computer; add sign-in and access controls before network/public deployment.</span></div>
+      <div class="panel"><div class="panel-title-row"><h2>Inbox</h2><button class="secondary small" id="refreshVisitorMessages">Refresh</button></div><div id="visitorMessageList" class="data-list"></div></div>
+    </section>
+    <section class="page" id="page-continuity">
+      <div class="page-heading"><div><p class="eyebrow">CONNECTED EXPERIENCE</p><h1>Sync & connections</h1><p class="muted">Pair another device to sync conversation history and inspect which integrations are actually configured.</p></div></div>
+      <div class="panel form-panel"><h2>Conversation sync</h2><p class="muted">Create a private sync token here, then enter that token on another device connected to the same deployed app. Only conversation history syncs in this prototype. Keep the token private; anyone with it can access that conversation history.</p><div class="form-row"><button class="primary" id="createSyncToken">Create sync token</button><button class="secondary" id="syncNow">Sync now</button></div><label>Sync token<input id="syncTokenInput" autocomplete="off" placeholder="Paste a token from your other device"></label><div class="form-row"><button class="secondary" id="saveSyncToken">Use this token</button><button class="secondary" id="copySyncToken">Copy token</button></div><div class="form-result" id="syncResult"></div></div>
+      <div class="panel" style="margin-top:18px"><div class="panel-title-row"><h2>Connected services</h2><button class="secondary small" id="refreshServices">Refresh</button></div><div id="servicesList" class="data-list"><div class="empty-state">Checking service status…</div></div></div>
+    </section>
+    <section class="page" id="page-database">
+      <div class="page-heading"><div><p class="eyebrow">LOCAL SQL STORAGE</p><h1>Database viewer</h1><p class="muted" id="dbPath">Read-only view of everything saved in your local database. Newest rows first.</p></div></div>
+      <div class="card" style="padding:16px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+          <select id="dbTable"></select>
+          <button class="secondary small" id="dbRefresh" type="button">Refresh</button>
+          <label class="muted"><input type="checkbox" id="dbAuto" checked> Auto-refresh</label>
+        </div>
+        <div style="overflow:auto;max-height:65vh"><table id="dbGrid" style="border-collapse:collapse;width:100%;font-size:13px"></table></div>
+      </div>
+    </section>
+    <section class="page" id="page-vault">
+      <div class="page-heading"><div><p class="eyebrow">PRIVATE BY DESIGN</p><h1>Password vault</h1><p class="muted">Credentials are encrypted before being stored. Use demo credentials only in this hackathon prototype.</p></div><div class="vault-lock-icon">♙</div></div>
+      <div class="security-banner"><strong>Security reminder</strong><span>Use a unique master passphrase. Do not paste real passwords into chat or share Inspector results. This prototype is not independently audited or ready for production use.</span></div>
+      <div id="vaultGate" class="panel vault-gate"><h2 id="vaultGateTitle">Password vault</h2><p class="muted" id="vaultGateText">Set up your vault with a long, unique demo passphrase.</p><form id="vaultGateForm"><label>Master password<input type="password" name="master_password" required minlength="12" autocomplete="current-password"></label><button class="primary" type="submit" id="vaultGateButton">Initialize vault</button></form><div class="form-result" id="vaultGateResult"></div></div>
+      <div id="vaultContent" class="vault-content hidden"><div class="vault-toolbar"><div><span class="status-dot"></span><strong>Vault unlocked</strong><span class="muted">· encrypted entries</span></div><button class="secondary" id="lockVault">Lock vault</button></div><div class="two-col"><form id="vaultEntryForm" class="panel form-panel"><h2>Save credential</h2><label>Entry title<input name="title" required placeholder="Demo email"></label><label>Website<input name="website" required placeholder="https://example.com"></label><label>Username<input name="username" required autocomplete="off"></label><label>Password<input name="password" type="password" required autocomplete="new-password"></label><label>Notes<textarea name="notes" placeholder="Optional notes"></textarea></label><button class="primary" type="submit">Encrypt & save</button><div class="form-result" id="vaultSaveResult"></div></form><div class="panel"><div class="panel-title-row"><h2>Saved credentials</h2><button class="secondary small" id="refreshVault">Refresh</button></div><input id="vaultSearch" class="search-input" placeholder="Search title, website, username…"><div id="vaultEntries" class="data-list"></div></div></div></div>
+    </section>
+
+    <section class="page" id="page-home-safety">
+      <div class="page-heading"><div><p class="eyebrow">CONNECTED HOME · SIMULATION</p><h1>Home safety</h1><p class="muted">Demo switches and safety rules. No real heater, gas valve, or mains hardware is connected.</p></div><span class="local-pill">DEMO ONLY</span></div>
+      <div class="device-grid">
+        <article class="panel device-card"><div class="device-icon">☼</div><h2>Bathroom light</h2><p>Simulated switch state</p><div class="device-state" id="stateBathroom">OFF</div><button class="primary" data-device="Bathroom Light">Toggle switch</button></article>
+        <article class="panel device-card"><div class="device-icon">♨</div><h2>Heater</h2><p>Simulated heavy appliance</p><div class="device-state" id="stateHeater">OFF</div><button class="primary" data-device="Heater">Toggle switch</button></article>
+        <article class="panel device-card"><div class="device-icon">☼</div><h2>Kitchen light</h2><p>Simulated switch state</p><div class="device-state" id="stateKitchen">OFF</div><button class="primary" data-device="Kitchen Light">Toggle switch</button></article>
+        <article class="panel device-card"><div class="device-icon">♨</div><h2>Gas stove</h2><p>Simulated appliance state</p><div class="device-state" id="stateGas">OFF</div><button class="primary" data-device="Gas Stove">Toggle switch</button></article>
+      </div>
+      <div class="panel"><h2>Safety event log</h2><p class="muted">Example rules: bathroom light turns off while heater is on; kitchen light turns off while gas stove is on.</p><div id="deviceWarnings" class="data-list"></div></div>
+    </section>
+    <section class="page" id="page-arrival">
+      <div class="page-heading"><div><p class="eyebrow">WELCOME HOME</p><h1>Arrival greeting</h1><p class="muted">Create family profiles and play a demo greeting. No camera-based recognition is enabled.</p></div></div>
+      <div class="two-col"><form id="familyForm" class="panel form-panel"><h2>Add family member</h2><label>Name<input name="name" required placeholder="e.g. Mom"></label><label>Greeting<input name="greeting" placeholder="Welcome home! How was your day?"></label><button class="primary">Save profile</button><div id="familyResult" class="form-result"></div></form><div class="panel"><h2>Trigger demo arrival</h2><label>Family member<select id="arrivalPerson"><option value="">Someone arrived</option></select></label><button class="primary" id="arrivalTrigger">Play greeting</button><div id="arrivalGreeting" class="dish-results"></div><div id="familyList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-alerts">
+      <div class="page-heading"><div><p class="eyebrow">LOCAL AWARENESS</p><h1>Local alerts</h1><p class="muted">Demo alert center. Live disaster/news feeds are not connected, so this must not be used as an emergency warning system.</p></div></div>
+      <div class="security-banner"><strong>Important</strong><span>Use official emergency alerts for real situations. This page stores sample/demo alerts only.</span></div>
+      <div class="two-col"><form id="alertForm" class="panel form-panel"><h2>Add a demo alert</h2><label>Severity<select name="severity"><option>INFO</option><option>WARNING</option><option>HIGH</option></select></label><label>Headline<input name="title" required placeholder="Heavy rain advisory (demo)"></label><label>Area<input name="area" value="Demo area"></label><label>Details<textarea name="details" placeholder="Sample alert details"></textarea></label><button class="primary">Add demo alert</button><div id="alertResult" class="form-result"></div></form><div class="panel"><div class="panel-title-row"><h2>Alert feed</h2><button class="secondary small" id="refreshAlerts">Refresh</button></div><div id="alertList" class="data-list"></div></div></div>
+    </section>
+    <section class="page" id="page-family-messages">
+      <div class="page-heading"><div><p class="eyebrow">FAMILY CONNECTION</p><h1>Family Voice Notes & Smart Reminders</h1><p class="muted">Leave a real voice message for one family member or everyone. Recipients can listen later, acknowledge it, and mark a reminder task complete.</p></div><span class="local-pill">VOICE NOTES</span></div>
+      <div class="security-banner"><strong>Local prototype</strong><span>Recordings are saved on this computer. This version does not send push notifications, and family members share this local dashboard. Add sign-in and authorization before network deployment.</span></div>
+      <div class="two-col">
+        <form id="familyMessageForm" class="panel form-panel"><h2>Record a family message</h2><label>Your name<input name="sender" required placeholder="Mom, Dad, Son…"></label><label>Send to<select name="recipient" required><option value="">Choose recipient</option><option>Everyone</option><option>Mom</option><option>Dad</option><option>Son</option><option>Daughter</option><option>Family member</option></select></label><label>Message type<select name="message_type"><option value="announcement">Family announcement</option><option value="personal" selected>Personal message</option><option value="reminder">Reminder / task</option><option value="urgent">Important / urgent</option></select></label><label>Short title<input name="title" placeholder="Dinner is ready / Wash the bike"></label><label>Optional text note<textarea name="text_content" placeholder="Optional summary so the recipient can quickly understand the message"></textarea></label><div class="recording-panel"><div class="recording-status" id="recordingStatus">Ready to record</div><div class="recording-timer" id="recordingTimer">00:00</div><div class="form-row"><button type="button" class="primary" id="startFamilyRecording">● Start recording</button><button type="button" class="secondary" id="stopFamilyRecording" disabled>■ Stop</button></div><audio id="familyAudioPreview" controls class="audio-preview hidden"></audio><p class="muted">Allow microphone access when the browser asks. Keep recordings short. Maximum upload size: 16 MB.</p></div><label class="checkbox-label"><input type="checkbox" name="is_task" value="yes"> This message is a task that can be marked complete</label><label class="checkbox-label"><input type="checkbox" name="is_important" value="yes"> Mark as important</label><button class="primary" type="submit" id="saveFamilyMessage" disabled>Save voice message</button><div class="form-result" id="familyMessageResult"></div></form>
+        <div class="panel"><div class="panel-title-row"><h2>Family inbox</h2><button class="secondary small" id="refreshFamilyMessages">Refresh</button></div><label>Filter recipient<select id="familyInboxFilter"><option value="">All family messages</option><option>Everyone</option><option>Mom</option><option>Dad</option><option>Son</option><option>Daughter</option><option>Family member</option></select></label><div id="familyMessageList" class="data-list"><div class="empty-state">No family voice notes yet. Record a message to get started.</div></div></div>
+      </div>
+    </section>
+    <footer>Alexa+ Personal Agent · Hackathon prototype · Runs locally on your computer</footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="voiceOverlay" class="voice-overlay hidden" role="dialog" aria-modal="true" aria-label="Voice conversation">
+  <button type="button" id="voiceMini" class="voice-minimize" aria-label="Minimise voice mode" title="Minimise (keep listening)">▁</button>
+  <button type="button" id="voiceClose" class="voice-close" aria-label="End voice mode">✕</button>
+  <div class="vo-center">
+    <button type="button" id="voiceOrb" class="vo-orb" data-state="idle" aria-label="Tap to talk or interrupt"><span class="vo-ring r1"></span><span class="vo-ring r2"></span><span class="vo-ring r3"></span><span class="vo-core"></span></button>
+    <div id="voiceState" class="vo-state">Starting…</div>
+    <div id="voiceHeard" class="vo-heard"></div>
+    <div id="voiceReply" class="vo-reply"></div>
+    <ul class="vo-hints" aria-label="Things you can say">
+      <li>“Alexa, remind me to take medicine in 2 minutes”</li>
+      <li>“Alexa, play Kesariya” · “stop the music”</li>
+      <li>“Add milk to inventory, expires 30 October”</li>
+      <li>“Alexa, tell me a joke” · ask me anything!</li>
+    </ul>
+  </div>
+  <div class="vo-footer">
+    <label class="vo-toggle"><input type="checkbox" id="voiceWakeToggle"> Wake word: say “Alexa” first</label>
+    <span class="vo-tip">Tap the orb to interrupt · say “stop” or “goodbye” to end</span>
+  </div>
+</div>
+<div id="musicPlayer" class="music-player hidden" aria-label="Music player">
+  <div id="ytHost"></div>
+  <div class="mp-bar"><span class="mp-note">♪</span><span id="mpTitle" class="mp-title">Music</span><button type="button" id="mpToggle" class="mp-btn" aria-label="Play or pause">⏸</button><button type="button" id="mpStop" class="mp-btn" aria-label="Stop music">✕</button><a id="mpOpen" class="mp-open" href="#" target="_blank" rel="noopener noreferrer">YouTube</a></div>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script src="{{ url_for('static', filename='assistant.js') }}"></script>
+<script src="{{ url_for('static', filename='voice.js') }}"></script>
+<script src="{{ url_for('static', filename='extras.js') }}"></script>
+</body></html>
