@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Alexa+ Personal Agent — Conversational Hackathon Prototype
 
 A local, talk-first personal assistant prototype. The main experience is the conversation panel; the feature pages are supporting controls and visual summaries, not the product's only interface.
@@ -236,3 +237,7 @@ Still intentionally not built (needs external services/hardware, so it stays hon
 ## Local SQL storage rule (v3.1)
 
 All app data lives in the local SQLite database (`data/assistant.db`, or `data/people/<name>.db`). Saying **"save this: …"** or **"store this …"** always writes to it: a note goes to memory, and an item with an expiry date goes to inventory. A bare "save this" makes the assistant ask what to store. Every chat exchange is also logged in the `chat_log` table. Password requests are still sent to the encrypted vault.
+=======
+# alexa-plus-
+Voice-first personal AI assistant that runs locally. Manage study tasks, reminders, food expiry, music, maps and an encrypted password vault by talking. Includes per-person profiles, Gemini chat and an MCP server.
+>>>>>>> 0499708c1bb86fc4c93af6bfe665812c14862450
